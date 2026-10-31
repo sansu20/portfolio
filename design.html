@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design | Chess Robot</title>
+<meta name="description" content="How we chose the layout, arm and claw for the chess robot using decision matrices.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav>
+  <div class="wrap">
+    <a class="brand" href="index.html">Chess Robot</a>
+    <a href="index.html">Overview</a>
+    <a class="on" href="design.html">Design</a>
+    <a href="kinematics.html">Kinematics</a>
+    <a href="vision.html">Vision</a>
+    <a href="cv.html">CV</a>
+    <a href="arm.html">Arm</a>
+    <a href="gallery.html">Gallery</a>
+  </div>
+</nav>
+
+<main class="wrap">
+  <header class="hero">
+    <span class="label">Design process</span>
+    <h1>Choosing the design</h1>
+    <p class="lead">Before building, we scored the options for three decisions: the pickup claw, the overall layout, and the arm. The highest total won each time.</p>
+  </header>
+
+  <figure>
+    <img src="images/decision-matrices.png" alt="Three decision matrices comparing claws, overall layouts, and arm types">
+    <figcaption>Decision matrices for the claw, the overall layout, and the arm.</figcaption>
+  </figure>
+
+  <h2>The three decisions</h2>
+  <div class="tablewrap">
+  <table>
+    <tr><th>Decision</th><th>Winner</th><th>Why</th></tr>
+    <tr><td>Layout</td><td>Camera under the board</td><td>Scored 5 on human occlusion risk and 5 on calibration stability, against 3 and 2 for a robot beside the board. It lost points on human accessibility (3 vs 6), a trade we accepted for reliable vision.</td></tr>
+    <tr><td>Arm</td><td>SCARA</td><td>A linear gantry beat it on accuracy (10 vs 8), but scored 3 on impact on the human player against 9 for SCARA. SCARA won overall, 40 to 38.</td></tr>
+    <tr><td>Claw</td><td>Electromagnet</td><td>The score was close, so it needed testing for viability. After testing, it became the confirmed choice.</td></tr>
+  </table>
+  </div>
+
+  <h2>Early sketches</h2>
+  <div class="grid2">
+    <figure>
+      <img src="images/sketch-scara.png" alt="Notebook sketch of a SCARA-type arm with dimensions in centimeters">
+      <figcaption>SCARA arm concept with estimated dimensions and joint layout.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/sketch-camera-under.png" alt="Notebook sketch of the camera-under-board concept with isometric and side views">
+      <figcaption>Camera-under-board concept drawing.</figcaption>
+    </figure>
+  </div>
+
+  <h2>What we'd change</h2>
+  <p>Putting everything in one box made the project compact and reliable, but it is bulky on a table, and the board's height means you have to stand to play. Next time we would either add more cameras to lower the board height, or choose an overhead camera design with piece recognition. Mechanically, the arm has a slight tilt that a more rigid design could remove.</p>
+
+  <div class="pager"><a href="index.html">&larr; Overview</a><a href="kinematics.html">Inverse Kinematics &rarr;</a></div>
+</main>
+
+<footer class="wrap">Chess Robot &middot; Sanskar Sharma &amp; Kai Trees</footer>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vision System | Chess Robot</title>
+<meta name="description" content="Why the camera sits under the board, and how the board and pieces were designed around it.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav>
+  <div class="wrap">
+    <a class="brand" href="index.html">Chess Robot</a>
+    <a href="index.html">Overview</a>
+    <a href="design.html">Design</a>
+    <a href="kinematics.html">Kinematics</a>
+    <a class="on" href="vision.html">Vision</a>
+    <a href="cv.html">CV</a>
+    <a href="arm.html">Arm</a>
+    <a href="gallery.html">Gallery</a>
+  </div>
+</nav>
+
+<main class="wrap">
+  <header class="hero">
+    <span class="label">Part 2 of 4</span>
+    <h1>The Vision System</h1>
+    <p class="lead">A camera under the board watches the pieces from below, so neither the player's hand nor the robot arm can block its view.</p>
+  </header>
+
+  <div class="callout"><strong>Credit:</strong> I wrote the vision software and move tracking, and CAD designed the pieces. My partner built the board and box the camera sits in, and we overlapped on testing and integration.</div>
+
+  <h2>Why under the board</h2>
+  <p>A camera above or beside a chess board has to deal with hands reaching across the squares, the robot arm itself, and shifting angles. Mounting the camera underneath avoids all of that. In our decision matrix, the camera-under-board layout scored 5 on human occlusion risk and 5 on calibration stability, against 3 and 2 for a robot beside the board. The cost was human accessibility: 3, versus 6 for the side layout. We accepted that trade for reliable vision.</p>
+  <figure>
+    <img src="images/sketch-camera-under.png" alt="Notebook sketch of the camera-under-board concept with isometric and side views">
+    <figcaption>Early concept drawing of the camera-under-board layout, with isometric and side views.</figcaption>
+  </figure>
+
+  <h2>Building the board around the camera</h2>
+  <p>The board's top layer is laser-cut and engraved wood with a hole for each square. Under it sits a clear acrylic layer so the camera can see up through the holes. The box under the board holds the Raspberry Pi, the camera, the motor drivers and the rest of the electronics.</p>
+  <div class="grid2">
+    <figure>
+      <img src="images/board-frame.jpg" alt="Wooden table frame with a perforated top">
+      <figcaption>First board frame assembled.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/pawn-hole.jpg" alt="A white pawn sitting in one of the board's holes">
+      <figcaption>Each piece sits in a hole, so the camera sees its base from below.</figcaption>
+    </figure>
+  </div>
+
+  <h2>Pieces designed for the camera</h2>
+  <p>The vision system looks at the colored base of each piece. Because the camera only needs to know which squares are occupied and by which side, pieces do not need to be colored differently from each other. Every piece of one side shares a color, and the system tracks which piece is which by following moves from the starting position. The hole-to-piece clearance had to be tuned so pieces drop in reliably without sticking or wobbling.</p>
+  <p>For testing, the pieces are red and yellow because those colors separate cleanly from each other and from the board.</p>
+
+  <h2>Tradeoffs</h2>
+  <p>This layout puts the board on top of a box, which makes the whole build bulky and tall enough that you need to stand to play. If we rebuilt it, we would either add more cameras to lower the board height, or move to an overhead camera with proper piece recognition.</p>
+
+  <div class="pager"><a href="kinematics.html">&larr; Inverse Kinematics</a><a href="cv.html">CV Analysis &rarr;</a></div>
+</main>
+
+<footer class="wrap">Chess Robot &middot; Sanskar Sharma &amp; Kai Trees</footer>
+</body>
+</html>

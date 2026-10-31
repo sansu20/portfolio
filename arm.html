@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Robot Arm | Chess Robot</title>
+<meta name="description" content="The SCARA arm, electromagnetic pickup, board box and the switch from gears to belts.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav>
+  <div class="wrap">
+    <a class="brand" href="index.html">Chess Robot</a>
+    <a href="index.html">Overview</a>
+    <a href="design.html">Design</a>
+    <a href="kinematics.html">Kinematics</a>
+    <a href="vision.html">Vision</a>
+    <a href="cv.html">CV</a>
+    <a class="on" href="arm.html">Arm</a>
+    <a href="gallery.html">Gallery</a>
+  </div>
+</nav>
+
+<main class="wrap">
+  <header class="hero">
+    <span class="label">Part 4 of 4</span>
+    <h1>The Robot Arm</h1>
+    <p class="lead">A SCARA arm with a lifting column and an electromagnet, driven by stepper motors and built on top of a wooden box that holds the electronics.</p>
+  </header>
+
+  <div class="callout"><strong>Credit:</strong> my partner designed and built the arm and the board it sits on. I wrote all the software that drives it and CAD designed the chess pieces it picks up, and we overlapped on testing, fit and integration. This page covers the hardware so the software pages make sense.</div>
+
+  <figure>
+    <img src="images/robot-arm.jpg" alt="The SCARA arm on its column, with belts, ribbon cables and the board beside it">
+    <figcaption>The arm today: belt-driven joints, a threaded lift column, and the board with test pieces beside it.</figcaption>
+  </figure>
+
+  <h2>How it works</h2>
+  <p>The arm has three axes. Two stepper motors rotate the two horizontal segments of the SCARA arm, which places the end of the arm over any square. A third axis lifts the whole arm up and down so the electromagnet can pick a piece off the board. When the magnet is energized through a relay, the piece is held and carried to its destination square, then released. A Raspberry Pi drives the stepper drivers and the relay.</p>
+
+  <h2>Initial design plan</h2>
+  <p>The first design review, from December 2025, set the motor requirements. Everything runs from a 12 V supply.</p>
+  <div class="tablewrap">
+  <table>
+    <tr><th>Motor</th><th>Purpose</th><th>Speed requirement</th><th>Voltage</th><th>Max current</th></tr>
+    <tr><td>Linear actuator</td><td>Lifts the whole arm so a piece can be taken off the board</td><td>Slow, high torque. It must resist gravity and hold the rest of the arm.</td><td>12 V</td><td>1 to 1.5 A</td></tr>
+    <tr><td>Rotator stepper 1</td><td>Rotates the first horizontal segment</td><td>Medium. No gravity load, but a piece should move in under 5 seconds.</td><td>12 V</td><td>2 A</td></tr>
+    <tr><td>Rotator stepper 2</td><td>Rotates the second horizontal segment for an additional degree of freedom</td><td>Same as stepper 1</td><td>12 V</td><td>2 A</td></tr>
+  </table>
+  </div>
+  <p>We chose stepper motors for their precision, and a driver with a high tolerance for our motors so they would not overheat. The initial plan used gear ratios of 1/5 for the lift and 3/10 for each rotator, which led to the problem described below.</p>
+
+  <h2>The electromagnet</h2>
+  <p>The pickup is an electromagnet switched by a relay. On the bench we checked tolerances and how much power it takes to hold a piece, and tried several metals to set into the pieces I designed so the magnet has something to grip.</p>
+  <figure>
+    <img src="images/electromagnet-test.jpg" alt="Electromagnet held above a white chess piece, with a relay board and ribbon cable wiring and a multimeter">
+    <figcaption>Electromagnet bench test with the relay board and a multimeter.</figcaption>
+  </figure>
+
+  <h2>Board and box</h2>
+  <p>The box is mainly wood. The top layer is laser-cut and engraved wood, with an acrylic layer under it so the camera can see through. The box also houses all of the electronics. Test pieces and fits were checked against the board throughout, and I adjusted my piece design to get the hole-to-board clearance right.</p>
+  <div class="grid2">
+    <figure>
+      <img src="images/board-frame.jpg" alt="Wooden table frame with a perforated top">
+      <figcaption>First board frame assembled.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/pawn-hole.jpg" alt="A white pawn sitting in one of the laser-cut holes in the board">
+      <figcaption>Checking piece-to-hole clearance on the laser-cut top.</figcaption>
+    </figure>
+  </div>
+
+  <h2>From gears to belts</h2>
+  <p>Along with various strength and tolerance adjustments, the biggest change came from the gears in the original design. They were too imprecise. The motor position varied by about 2 degrees of motion, and there was no repeatable zero position, which made calibration hard.</p>
+  <div class="callout"><strong>Fix:</strong> we switched from gears to GT2 timing belts with proper tensioning systems. The variability dropped to nearly zero.</div>
+  <figure>
+    <img src="images/arm-gear-v1.jpg" alt="Top view of the first gear-driven arm with green gears, metal channel and 3D printed parts">
+    <figcaption>First version: the gear-driven arm.</figcaption>
+  </figure>
+
+  <h2>What we'd improve</h2>
+  <p>The arm has a slight tilt. A more rigid design would remove it and help calibration.</p>
+
+  <div class="pager"><a href="cv.html">&larr; CV Analysis</a><a href="gallery.html">Gallery &rarr;</a></div>
+</main>
+
+<footer class="wrap">Chess Robot &middot; Sanskar Sharma &amp; Kai Trees</footer>
+</body>
+</html>

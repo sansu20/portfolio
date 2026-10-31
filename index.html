@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chess Robot</title>
+<meta name="description" content="A robot that plays physical chess: computer vision reads the board, a game algorithm picks a move, and inverse kinematics and motor control carry it out.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav>
+  <div class="wrap">
+    <a class="brand" href="index.html">Chess Robot</a>
+    <a class="on" href="index.html">Overview</a>
+    <a href="design.html">Design</a>
+    <a href="kinematics.html">Kinematics</a>
+    <a href="vision.html">Vision</a>
+    <a href="cv.html">CV</a>
+    <a href="arm.html">Arm</a>
+    <a href="gallery.html">Gallery</a>
+  </div>
+</nav>
+
+<main class="wrap">
+  <header class="hero">
+    <span class="label">Software &amp; robotics project &middot; Team Zugzwangers</span>
+    <h1>A robot that plays physical chess</h1>
+    <p class="lead">A camera reads the board, a game algorithm picks a reply, and inverse kinematics and motor control turn that reply into a real piece moving on a real board.</p>
+  </header>
+
+  <figure>
+    <img src="images/board-full-front.jpg" alt="The full chess board set up with white and black pieces, with the robot arm behind it">
+  </figure>
+
+  <div class="facts">
+    <div class="fact"><span class="label">Team</span><p>Sanskar Sharma and Kai Trees. I wrote all of the software and CAD designed the pieces. My partner built the arm and the board. We overlapped on testing and integration.</p></div>
+    <div class="fact"><span class="label">Timeline &amp; status</span><p>October 2025 to present. Piece movement and electronics work, and the game algorithm matches an opponent's skill. Remaining work is calibration and full integration.</p></div>
+    <div class="fact"><span class="label">Tools</span><p>Raspberry Pi, Python, stepper drivers, electromagnet and relay, Fusion 360, 3D printer, laser cutter.</p></div>
+  </div>
+
+  <h2>How it works</h2>
+  <p>Every move goes through the same loop, running on a Raspberry Pi inside the board.</p>
+  <div class="tablewrap">
+  <table>
+    <tr><th>Stage</th><th>What it does</th><th>Details</th></tr>
+    <tr><td>1. See</td><td>A camera under the board classifies each square as red, yellow or empty</td><td><a href="vision.html">Vision</a>, <a href="cv.html">CV</a></td></tr>
+    <tr><td>2. Track</td><td>Compares the board before and after to find the move played</td><td><a href="cv.html">CV</a></td></tr>
+    <tr><td>3. Decide</td><td>A game algorithm chooses a reply at a set skill level</td><td><a href="#game">Below</a></td></tr>
+    <tr><td>4. Aim</td><td>Inverse kinematics converts the target square into joint angles</td><td><a href="kinematics.html">Kinematics</a></td></tr>
+    <tr><td>5. Move</td><td>Stepper control, lift, and electromagnet on and off</td><td><a href="arm.html">Arm</a></td></tr>
+  </table>
+  </div>
+
+  <h2>See it play</h2>
+  <figure>
+    <video controls preload="metadata" playsinline poster="images/robot-moving-poster.jpg">
+      <source src="images/robot-moving.mp4" type="video/mp4">
+      Your browser can't play this video.
+    </video>
+    <figcaption>A player moves a white piece and the robot answers on its side of the board.</figcaption>
+  </figure>
+
+  <h2 id="game">Game algorithm</h2>
+  <p>Once the vision system has tracked the opponent's move, the game algorithm chooses the robot's reply. It is set up to match the opponent's level of skill, so a beginner and a strong player can both get a fair game. The chosen move then goes to inverse kinematics and motor control.</p>
+
+  <h2>Explore the project</h2>
+  <div class="cards">
+    <a href="design.html"><b>Design &rarr;</b><span>How we chose the layout, arm and claw with decision matrices.</span></a>
+    <a href="kinematics.html"><b>Inverse Kinematics &rarr;</b><span>How a target square becomes two joint angles.</span></a>
+    <a href="vision.html"><b>Vision System &rarr;</b><span>Why the camera sits under the board.</span></a>
+    <a href="cv.html"><b>CV Analysis &rarr;</b><span>Detecting pieces and tracking moves.</span></a>
+    <a href="arm.html"><b>Robot Arm &rarr;</b><span>The SCARA arm and electromagnet pickup.</span></a>
+    <a href="gallery.html"><b>Gallery &rarr;</b><span>Photos of the finished board and the build.</span></a>
+  </div>
+
+  <div class="pager"><span></span><a href="design.html">Design &rarr;</a></div>
+</main>
+
+<footer class="wrap">Chess Robot &middot; Sanskar Sharma &amp; Kai Trees</footer>
+</body>
+</html>

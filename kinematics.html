@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inverse Kinematics | Chess Robot</title>
+<meta name="description" content="How a target chess square becomes two SCARA joint angles and a lift height.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav>
+  <div class="wrap">
+    <a class="brand" href="index.html">Chess Robot</a>
+    <a href="index.html">Overview</a>
+    <a href="design.html">Design</a>
+    <a class="on" href="kinematics.html">Kinematics</a>
+    <a href="vision.html">Vision</a>
+    <a href="cv.html">CV</a>
+    <a href="arm.html">Arm</a>
+    <a href="gallery.html">Gallery</a>
+  </div>
+</nav>
+
+<main class="wrap">
+  <header class="hero">
+    <span class="label">Part 1 of 4</span>
+    <h1>Inverse Kinematics</h1>
+    <p class="lead">The arm is told a chess square. Inverse kinematics turns that square into the two joint angles that put the magnet over it.</p>
+  </header>
+
+  <div class="callout"><strong>My part:</strong> I wrote all of the software, including this. My partner built the arm and board it controls, and we calibrated them together.</div>
+
+  <h2>The problem</h2>
+  <p>A chess move is described as squares, like "E2 to E4". The arm is controlled by motor angles. Something has to translate between the two. That translation is inverse kinematics: given where the end of the arm should be, find the joint angles that put it there.</p>
+
+  <h2>Pipeline</h2>
+  <div class="tablewrap">
+  <table>
+    <tr><th>Stage</th><th>Input</th><th>Output</th></tr>
+    <tr><td>1. Square to coordinates</td><td>Square name, such as <code>E4</code></td><td>Target (x, y) in millimeters on the board, measured from the arm's base</td></tr>
+    <tr><td>2. Inverse kinematics</td><td>Target (x, y), link lengths <code>L1</code> and <code>L2</code></td><td>Joint angles <code>&theta;1</code> and <code>&theta;2</code></td></tr>
+    <tr><td>3. Angles to steps</td><td>Joint angles, belt and pulley ratio, motor steps per revolution</td><td>Step counts for each stepper</td></tr>
+    <tr><td>4. Execute</td><td>Step counts, lift height, magnet state</td><td>Arm moves, lowers, grabs, lifts, travels, lowers, releases</td></tr>
+  </table>
+  </div>
+
+  <h2>The math for a two-link arm</h2>
+  <p>A SCARA arm moves in a flat plane with two rotating links, so its geometry reduces to a triangle. For a target at (x, y), the distance from the base is <code>r&sup2; = x&sup2; + y&sup2;</code>. The law of cosines gives the elbow angle, and the shoulder angle follows from the target direction minus an offset caused by the second link.</p>
+<pre>
+# Inputs: target x, y; link lengths L1, L2
+# Output: shoulder angle theta1, elbow angle theta2
+
+r2 = x*x + y*y
+cos_elbow = (r2 - L1*L1 - L2*L2) / (2 * L1 * L2)
+
+if abs(cos_elbow) > 1:
+    reject_move()            # target is out of reach
+
+theta2 = acos(cos_elbow)     # elbow angle (pick one solution, see below)
+theta1 = atan2(y, x) - atan2(L2 * sin(theta2), L1 + L2 * cos(theta2))
+</pre>
+
+  <h3>Two solutions</h3>
+  <p>Most targets can be reached with the elbow bent either way. The code picks one configuration and sticks with it, so the arm never flips between the two in the middle of a game.</p>
+
+  <h3>Out-of-reach targets</h3>
+  <p>If the cosine value falls outside the range &minus;1 to 1, the target is farther than the arm can stretch or closer than it can fold. The move is rejected instead of sending the motors somewhere impossible.</p>
+
+  <h2>Calibration and feedback</h2>
+  <p>The math assumes perfect link lengths and a known zero position. Real hardware is never that clean, which is why the belt rebuild mattered so much. With gears, the motor position wandered by about 2 degrees and there was no repeatable zero, so correct angles still landed in the wrong place. With tensioned timing belts the error dropped to nearly zero, and calibration became a matter of adjusting the stored board positions instead of fighting the hardware.</p>
+  <div class="callout"><strong>Ongoing work:</strong> calibrating board positions and arm movement is one of the main remaining tasks before full playability.</div>
+
+  <div class="pager"><a href="design.html">&larr; Design</a><a href="vision.html">Vision System &rarr;</a></div>
+</main>
+
+<footer class="wrap">Chess Robot &middot; Sanskar Sharma &amp; Kai Trees</footer>
+</body>
+</html>

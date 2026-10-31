@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CV Analysis | Chess Robot</title>
+<meta name="description" content="Detecting pieces and tracking moves, and how switching from RGB to HSV fixed lighting errors.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav>
+  <div class="wrap">
+    <a class="brand" href="index.html">Chess Robot</a>
+    <a href="index.html">Overview</a>
+    <a href="design.html">Design</a>
+    <a href="kinematics.html">Kinematics</a>
+    <a href="vision.html">Vision</a>
+    <a class="on" href="cv.html">CV</a>
+    <a href="arm.html">Arm</a>
+    <a href="gallery.html">Gallery</a>
+  </div>
+</nav>
+
+<main class="wrap">
+  <header class="hero">
+    <span class="label">Part 3 of 4</span>
+    <h1>Computer Vision Analysis</h1>
+    <p class="lead">The Raspberry Pi reads the board from underneath and tracks every move from the starting position.</p>
+  </header>
+
+  <h2>How it works</h2>
+  <p>The camera under the board looks up through a hole for each square. For every square, the software checks the color of the piece base: red, yellow, or empty. Comparing the board before and after a move shows which piece moved and where, so the game state can be tracked from the starting position without needing every piece to be a different color.</p>
+
+  <div class="callout"><strong>Credit:</strong> I wrote the detection pipeline and move tracking. My partner built the board and camera housing it runs on, and we tested and debugged together.</div>
+
+  <h3>Program output on a test board</h3>
+<pre>
+$ python cvtesting.py
+
+RED PIECES ON:
+['F6', 'E3', 'F3', 'G3', 'A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2', 'A1', 'B1', 'E1', 'H1']
+
+YELLOW PIECES ON:
+['B8', 'C8', 'D8', 'E8', 'F8', 'G8', 'H8', 'A7', 'B7', 'D7', 'E7', 'F7', 'G7', 'H7', 'A6']
+</pre>
+  <p>The program prints each side's occupied squares: 16 red and 15 yellow on this board.</p>
+
+  <h2>Major complication: lighting</h2>
+  <p>The first version misidentified about 10% of pieces. The cause was lighting. Changing light conditions shifted the RGB values heavily, so the same red base could read as a different color from one moment to the next.</p>
+
+  <h3>The fix</h3>
+  <div class="tablewrap">
+  <table>
+    <tr><th>Change</th><th>Why it helps</th></tr>
+    <tr><td>RGB to HSV</td><td>HSV separates the color itself (hue) from brightness, so a change in lighting mostly moves brightness and leaves hue stable.</td></tr>
+    <tr><td>Median pixel value over each hole</td><td>A single glare spot or shadow no longer decides the reading for a square.</td></tr>
+    <tr><td>Most common reading over several frames</td><td>A one-frame flicker or misread gets outvoted by the other frames.</td></tr>
+  </table>
+  </div>
+  <div class="callout"><strong>Result:</strong> errors dropped from about 10% to close to zero.</div>
+
+  <h2>Current status</h2>
+  <p>Detection works reliably on the test board. The remaining work is honing the full pipeline, calibrating board positions, and integrating vision with the arm and the game algorithm so the robot can play complete games.</p>
+
+  <div class="pager"><a href="vision.html">&larr; Vision System</a><a href="arm.html">Robot Arm &rarr;</a></div>
+</main>
+
+<footer class="wrap">Chess Robot &middot; Sanskar Sharma &amp; Kai Trees</footer>
+</body>
+</html>
